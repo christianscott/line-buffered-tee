@@ -15,7 +15,7 @@ void write_and_flush_to_each(FILE **fptrs, size_t n_fptrs, char *buf, size_t n)
 {
     for (size_t i = 0; i < n_fptrs; i++) {
         fwrite(buf, sizeof(char), n, fptrs[i]);
-        fflush(fptr);
+        fflush(fptrs[i]);
     }
 }
 
