@@ -17,5 +17,9 @@ jobs:
       run: make
     - name: make all
       run: make all
+    - name: install bats
+      run: |
+        ssudo apt-get update -y
+        sudo apt-get install bats
     - name: make test
       run: make test
