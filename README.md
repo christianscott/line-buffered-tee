@@ -1,8 +1,25 @@
-# line_buffered_tee
+# line_buffered_tee 𝓣
 
 This solves the problem of `tee`ing output from programs that do not flush their output line-by-line. This can cause problems when, for example, you want to append logs lines from multiple concurrent processes to a single log file via `tee`. Unless *all* those programs flush their output line-by-line, you might get mangled logs in your log file.
 
 The [`tee-break`](https://github.com/christianscott/tee-break) repo is a practical demonstration of this problem. Using this program is equivalent to using `your_program | ./bin/line_buffer | tee file1 file2`.
+
+Before:
+```
+$ ./run.sh
+{{  ""mmssgg""::  ""hheelllloo!!""  }}
+
+{{  ""mmssgg""::  ""ggooooddbbyyee  ::((""  }}
+```
+
+After:
+```
+$ BUFFER_LINES=true ./run.sh
+{ "msg": "hello!" }
+{ "msg": "hello!" }
+{ "msg": "goodbye :(" }
+{ "msg": "goodbye :(" }
+```
 
 ## usage
 
