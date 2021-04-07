@@ -9,18 +9,15 @@
 #define DEBUG(...)
 #endif // IS_DEBUG
 
-#define WRITE_AND_FLUSH(fptr, buf, size, n) \
-    do {                                    \
-        fwrite(buf, size, n, fptr);         \
-        fflush(fptr);                       \
-    } while (0)
-
-#define WRITE_AND_FLUSH_TO_EACH(fptrs, n_fptrs, buf, size, n) \
-    for (int WRITE_AND_FLUSH_TO_EACH_i = 0; WRITE_AND_FLUSH_TO_EACH_i < n_fptrs; WRITE_AND_FLUSH_TO_EACH_i++) { \
-        WRITE_AND_FLUSH(fptrs[WRITE_AND_FLUSH_TO_EACH_i], buf, size, n); \
-    }
-
 #define INITIAL_CAP 1024
+
+void write_and_flush_to_each(FILE **fptrs, size_t n_fptrs, char *buf, size_t n)
+{
+    for (size_t i = 0; i < n_fptrs; i++) {
+        fwrite(buf, sizeof(char), n, fptrs[i]);
+        fflush(fptr);
+    }
+}
 
 int main(int argc, char **argv)
 {
@@ -66,7 +63,7 @@ int main(int argc, char **argv)
         buf[n++] = c;
         if (c == '\n') {
             DEBUG("hit a newline, flushing buffered input to outputs\n");
-            WRITE_AND_FLUSH_TO_EACH(descriptors, n_descriptors, buf, sizeof(char), n);
+            write_and_flush_to_each(descriptors, n_descriptors, buf, n);
             n = 0;
         }
     }
@@ -75,7 +72,7 @@ int main(int argc, char **argv)
         DEBUG("writing %lu remaining bytes to outputs\n", n);
         // there are remaining bytes to write to the outputs
         buf[n++] = '\n';
-        WRITE_AND_FLUSH_TO_EACH(descriptors, n_descriptors, buf, sizeof(char), n);
+        write_and_flush_to_each(descriptors, n_descriptors, buf, n);
     }
 
     return 0;
