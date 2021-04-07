@@ -1,4 +1,4 @@
-# line_buffered_tee 𝓣
+# 𝓣 line_buffered_tee
 
 This solves the problem of `tee`ing output from programs that do not flush their output line-by-line. This can cause problems when, for example, you want to append logs lines from multiple concurrent processes to a single log file via `tee`. Unless *all* those programs flush their output line-by-line, you might get mangled logs in your log file.
 
