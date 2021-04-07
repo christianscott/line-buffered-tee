@@ -20,4 +20,7 @@ example: tee-breaker executable
 debug: DEBUG=-DIS_DEBUG -g
 debug: executable
 
+test: executable
+	@bats test/
+
 all: setup executable
