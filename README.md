@@ -1,25 +1,29 @@
 # 𝓣 line_buffered_tee
 
+> Warning: this is not production-quality software. It's more of a demo than anything else. Buyer beware!
+
 This solves the problem of `tee`ing output from programs that do not flush their output line-by-line. This can cause problems when, for example, you want to append logs lines from multiple concurrent processes to a single log file via `tee`. Unless *all* those programs flush their output line-by-line, you might get mangled logs in your log file.
 
-The [`tee-break`](https://github.com/christianscott/tee-break) repo is a practical demonstration of this problem. Using this program is equivalent to using `your_program | ./bin/line_buffer | tee file1 file2`.
+For a practical demonstration of the problem that this fixes, run `make example`:
 
-Before:
 ```
-$ ./run.sh
+$ make example
+./example/run.sh
+Without line buffering (via tee -a):
 {{  ""mmssgg""::  ""hheelllloo!!""  }}
 
 {{  ""mmssgg""::  ""ggooooddbbyyee  ::((""  }}
+
+With line buffering (via bin/line_buffered_tee):
+{ "msg": "hello!" }
+{ "msg": "hello!" }
+{ "msg": "goodbye :(" }
+{ "msg": "goodbye :(" }
 ```
 
-After:
-```
-$ BUFFER_LINES=true ./run.sh
-{ "msg": "hello!" }
-{ "msg": "hello!" }
-{ "msg": "goodbye :(" }
-{ "msg": "goodbye :(" }
-```
+The example script runs two commands concurrently, both of which `tee` to the same file & flush after every single character.
+
+You can see that when we use `tee -a` the output from the two commands is interspersed. If we buffer the output line-by-line instead, the log lines are preserved. You can verify that this is also the case for the output file by inspecting `tee.log`.
 
 ## usage
 
